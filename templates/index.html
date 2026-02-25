@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inspection Reports</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        a { text-decoration: none; color: #0066cc; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Inspection Reports</h1>
+    <a href="{{ url_for('new_inspection') }}">Create New Inspection</a>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Inspector</th>
+                <th>Location</th>
+                <th>Date</th>
+                <th>Installation</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inspection in inspections %}
+            <tr>
+                <td>{{ inspection.id }}</td>
+                <td>{{ inspection.inspector_name }}</td>
+                <td>{{ inspection.location }}</td>
+                <td>{{ inspection.inspection_date }}</td>
+                <td>{{ inspection.installation_name }}</td>
+                <td>
+                    <a href="{{ url_for('view_inspection', id=inspection.id) }}">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inspection Report - {{ inspection.inspector_name }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+        .header h1 { color: #0066cc; }
+        .report-section { margin-bottom: 20px; }
+        .checklist { margin-left: 20px; }
+        .checklist-item { margin-bottom: 5px; }
+        .photo-section { margin-top: 20px; }
+        .photo-container { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; }
+        .photo { max-width: 300px; height: auto; }
+        .photo-comment { margin-top: 5px; font-size: 0.9em; }
+        .checkbox-container { display: flex; align-items: center; }
+        .checkbox { margin-right: 5px; }
+        .summary-section { margin-top: 20px; }
+        .summary-buttons { display: flex; gap: 10px; margin-top: 10px; }
+        .btn { background: #0066cc; color: white; padding: 5px 10px; border: none; cursor: pointer; }
+        .btn:hover { background: #0055aa; }
+        .download-btn { background: #333; color: white; padding: 5px 10px; border: none; cursor: pointer; }
+        .download-btn:hover { background: #555; }
+        .update-note { color: #888; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Inspection Report</h1>
+        <p><strong>Inspector:</strong> {{ inspection.inspector_name }}<br>
+           <strong>Location:</strong> {{ inspection.location }}<br>
+           <strong>Date:</strong> {{ inspection.inspection_date }}<br>
+           <strong>Installation:</strong> {{ inspection.installation_name }}</p>
+    </div>
+
+    <div class="report-section">
+        <h2>Checklist</h2>
+        <ul class="checklist">
+            {% for item in checklist_items %}
+            <li class="checklist-item">
+                <input type="checkbox" class="checklist-item-checkbox" data-item-id="{{ item.id }}" data-inspection-id="{{ inspection.id }}"> {{ item.name }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="report-section">
+        <h2>Photos</h2>
+        <div class="photo-section">
+            {% for photo in photos %}
+            <div class="photo-container">
+                <img src="{{ url_for('static', filename=photo.photo_path) }}" class="photo" alt="Photo {{ loop.index }}">
+                <div class="photo-comment">{{ photo.comment or 'No comment' }}</div>
+                <div class="checkbox-container">
+                    <input type="checkbox" class="resolved-checkbox" data-photo-id="{{ photo.id }}" data-inspection-id="{{ inspection.id }}" data-resolved="{{ photo.resolved }}">
+                    <label>Resolved</label>
+                </div>
+                <div class="update-note">Updated: {{ photo.uploaded_at }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="report-section">
+        <h2>Summary</h2>
+        <textarea name="summary" rows="4" cols="50" placeholder="Enter summary text here">{{ inspection.summary or '' }}</textarea>
+        <div class="summary-buttons">
+            <button class="btn" onclick="toggleStatus('ok')">Ok for operation</button>
+            <button class="btn" onclick="toggleStatus('minor')">Minor remarks</button>
+            <button class="btn" onclick="toggleStatus('major')">Major remarks</button>
+        </div>
+    </div>
+
+    <div class="report-section">
+        <h2>Download Report</h2>
+        <a href="{{ url_for('generate_pdf', id=inspection.id) }}" class="download-btn">Download as PDF</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checklistItems = document.querySelectorAll('.checklist-item-checkbox');
+            const photoCheckboxes = document.querySelectorAll('.resolved-checkbox');
+
+            checklistItems.forEach(item => {
+                item.addEventListener('change', function() {
+                    const inspectionId = this.getAttribute('data-inspection-id');
+                    const itemId = this.getAttribute('data-item-id');
+                    // Update the database here (implementation would go here)
+                });
+            });
+
+            photoCheckboxes.forEach(box => {
+                box.addEventListener('change', function() {
+                    const photoId = this.getAttribute('data-photo-id');
+                    const inspectionId = this.getAttribute('data-inspection-id');
+                    const resolved = this.checked ? 1 : 0;
+                    // Update the database here (implementation would go here)
+                });
+            });
+
+            function toggleStatus(status) {
+                // Implementation for toggling status
+            }
+        });
+    </script>
+</body>
+</html>
